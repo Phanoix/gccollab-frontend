@@ -30,30 +30,10 @@ jobs:
           npm run build-dev --if-present
           npm run test --if-present -- --watch=false --browsers=ChromeHeadless
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
-        with:
-          name: node-app
-          path: ./dist/gccollab-frontend
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'Test'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v2
-        with:
-          name: node-app
-
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'testcollabfe'
-          slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_64082DF3F72B4588A9ACB776CEAD3B24 }}
-          package: .
+          package: ./dist/gccollab-frontend
